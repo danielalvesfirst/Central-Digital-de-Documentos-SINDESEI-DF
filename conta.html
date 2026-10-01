@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Sindesei DF</title>
+    <link rel="stylesheet" href="02style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <header>
+            <h1>Minha Conta</h1>
+            <img src="Sindesei-DF-preto.svg" alt="Sindesei DF" class="logo">
+        </header>
+
+        <section class="profile-card">
+
+            <div class="profile-info">
+                <label for="foto" class="avatar-circle">
+                    <img src="icon-imgPerson.svg" alt="Foto de perfil">
+                </label>
+                <input type="file" id="foto" name="foto" accept="image/*">
+
+                <div>
+                    <h2>Exemplo da Silva</h2>
+                    <p></p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn-blue">Editar Perfil</button>
+                <a href="senhanova.html" class="btn btn-orange">Editar senha</a>
+            </div>
+
+        </section>
+
+        <section class="data-grid">
+
+            <div>
+                <label>Nome Completo:</label>
+                <input type="text" name="nome" placeholder="Exemplo Da Silva">
+            </div>
+
+            <div>
+                <label>Email Corporativo:</label>
+                <input type="email" id="email" name="email" placeholder="Exemplo@gmail.com">
+            </div>
+
+            <div>
+                <label>CPF:</label>
+                <input type="text" name="CPF" placeholder="xxx.xxx.xxx-xx" id="CPF">
+            </div>
+
+            <div>
+                <label>Telefone:</label>
+                <input type="text"  name="Telefone" id="Telefone" placeholder="(xx) xxxxx-xxxx">
+            </div>
+
+            <div>
+                <label>Cargo:</label>
+                <input type="text" id="Cargo" name="Cargo" placeholder="Gerente de Documentação">
+            </div>
+
+            <div>
+                <label>Nível de Acesso:</label>
+                <input type="text" name="Nivel de acesso" id="Nivel de acesso " placeholder="Administrador">
+            </div>
+
+            <div>
+                <label>Departamento:</label>
+                <input type="text" id="Departamento"  name="Departamento" placeholder="Administrativo">
+            </div>
+
+            <a href="cadastro.html" class="btn-logout">Sair</a>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
