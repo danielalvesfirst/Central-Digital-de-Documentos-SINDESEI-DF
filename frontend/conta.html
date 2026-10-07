@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Sindesei DF</title>
+    <link rel="stylesheet" href="assets/css/02style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <header>
+            <h1>Minha Conta</h1>
+            <img src="assets/logos/Sindesei-DF-preto.svg" alt="Sindesei DF" class="logo">
+        </header>
+
+        <section class="profile-card">
+
+            <div class="profile-info">
+                <label for="foto" class="avatar-circle">
+                    <img src="assets/icons/icon-imgPerson.svg" alt="Foto de perfil">
+                </label>
+                <input type="file" id="foto" name="foto" accept="image/*">
+
+                <div>
+                    <h2>Exemplo da Silva</h2>
+                    <p></p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn-blue">Editar Perfil</button>
+                <a href="senhanova.html" class="btn btn-orange">Editar senha</a>
+            </div>
+
+        </section>
+
+        <!-- AQUI ESTÁ A MUDANÇA: A section antiga foi substituída por esta nova estrutura -->
+        <section class="data-grid">
+
+            <div class="input-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" placeholder="Exemplo Da Silva">
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email Corporativo</label>
+                <input type="email" id="email" name="email" placeholder="Exemplo@gmail.com">
+            </div>
+
+            <div class="input-group">
+                <label for="CPF">CPF</label>
+                <input type="text" id="CPF" name="CPF" placeholder="xxx.xxx.xxx-xx">
+            </div>
+
+            <div class="input-group">
+                <label for="Telefone">Telefone</label>
+                <input type="text" id="Telefone" name="Telefone" placeholder="(xx) xxxxx-xxxx">
+            </div>
+
+            <div class="input-group">
+                <label for="Cargo">Cargo</label>
+                <input type="text" id="Cargo" name="Cargo" placeholder="Gerente de Documentação">
+            </div>
+
+            <div class="input-group">
+                <label for="Nivel">Nível de Acesso</label>
+                <input type="text" id="Nivel" name="Nivel de acesso" placeholder="Administrador">
+            </div>
+
+            <div class="input-group">
+                <label for="Departamento">Departamento</label>
+                <input type="text" id="Departamento" name="Departamento" placeholder="Administrativo">
+            </div>
+
+            <a class="btn-logout" href="index.html">
+                <img src="assets/icons/iconUpload.svg" alt="Sair" class="logo-logout">
+                Sair
+            </a>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

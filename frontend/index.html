@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 
-  <link rel="stylesheet" href="style.css">
-
-  <title>Document</title>
 </head>
 <body>
-  
+    <img class="logo" src="assets/logos/Sindesei-DF-padrao.svg">
+     <form>
+        <label for="email"></label>
+        <input type="email" name="email" id="email" placeholder="E-mail corporativo" >
+           
+         
+         <label for="senha"></label>
+         <input type="password" id="senha" name="senha" placeholder="Senha" minlength="8" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="A senha deve ter pelo menos 8 caracteres, incluindo um número e um caractere especial." required>
+           
+         <button type="enviar">Entrar</button>
+           
 
-  <script src="script.js"></script>
+     </form>
+      <a href="recuperar.html">Esqueci minha senha</a>
+
+      <script src="script.js"></script>
 </body>
 </html>

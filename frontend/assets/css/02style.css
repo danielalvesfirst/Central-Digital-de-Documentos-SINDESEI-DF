@@ -1,0 +1,217 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #FAFAFA;
+    color: #000000;
+    padding: 25px 20px;
+}
+
+main {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 26px;
+}
+
+.logo {
+    width: 250px;
+    height: auto;
+}
+
+/* --- CARD DE PERFIL --- */
+.profile-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #7C7C7C;
+    border-radius: 16px;
+    padding: 45px;
+    margin-bottom: 35px;
+    background-color: #FAFAFA;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #7C7C7C;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#foto {
+    display: none;
+}
+
+.profile-info h2 {
+    font-size: 21px;
+    margin-bottom: 5px;
+}
+
+.profile-info p {
+    color: #7C7C7C;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* --- BOTÕES DO TOPO --- */
+.btn-blue,
+.btn-orange {
+    padding: 14px 25px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-blue {
+    background-color: #004A90;
+    color: #FFFFFF;
+}
+
+.btn-orange {
+    background-color: #D09400;
+    color: #FFFFFF;
+}
+
+/* --- GRID DE FORMULÁRIO --- */
+.data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px 35px;
+}
+
+/* Container de ancoragem de cada campo */
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+/* O input cria a borda ao redor conforme o design original */
+.input-group input {
+    width: 100%;
+    height: 75px;                /* Mantido os 75px originais */
+    padding: 20px 24px;
+    font-size: 16px;
+    border: 1px solid #7C7C7C;   /* Cor cinza escura original */
+    border-radius: 16px;         /* Bordas arredondadas originais */
+    outline: none;
+    background-color: transparent;
+    box-sizing: border-box;
+}
+
+/* O label agora fica EXATAMENTE em cima da linha */
+.input-group label {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    transform: translateY(-50%); /* Corta a linha na horizontal perfeitamente */
+    
+    /* CORRIGIDO: Agora usa #FAFAFA para sumir com o traço atrás do texto no fundo cinza */
+    background-color: #FAFAFA;   
+    
+    padding: 0 8px;              /* Espaço para afastar a linha das letras */
+    font-size: 15px;             /* Tamanho original ajustado */
+    color: #000000;
+    font-weight: bold;
+    pointer-events: none;        /* Permite clicar no texto e ativar o input */
+}
+
+/* --- BOTÃO DE SAIR --- */
+.btn-logout {
+    grid-column: 2;              /* Força o botão a alinhar na coluna da direita */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    height: 54px;
+    border: none;
+    border-radius: 15px;
+    background-color: #921932;
+    color: #ffffff;
+    margin-top: 24px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.btn-logout:hover {
+    background-color: #B31F3E;
+}
+
+.logo-logout {
+    width: 20px; 
+    height: auto;
+    transform: rotate(90deg); 
+}
+
+/* --- RESPONSIVIDADE (CELULAR) --- */
+@media(max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+        gap: 25px;
+        align-items: flex-start;
+        padding: 25px;
+    }
+
+    .profile-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-blue, .btn-orange {
+        width: 100%;
+        text-align: center;
+    }
+
+    .data-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-logout {
+        grid-column: 1;          /* Em telas pequenas volta para a coluna única */
+    }
+
+    .logo {
+        width: 180px;
+    }
+}
