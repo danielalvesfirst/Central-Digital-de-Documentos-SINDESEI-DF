@@ -20,69 +20,73 @@
 
             <div class="profile-info">
                 <label for="foto" class="avatar-circle">
-                    <img src="assets/icons/icon-imgPerson.svg" alt="Foto de perfil">
+                    <img src="assets/icons/icon-imgPerson.svg" alt="Foto de perfil" id="foto-img">
                 </label>
                 <input type="file" id="foto" name="foto" accept="image/*">
 
                 <div>
-                    <h2>Exemplo da Silva</h2>
-                    <p></p>
+                    <h2 id="nome-topo">Carregando...</h2>
+                    <p id="cargo-topo"></p>
                 </div>
             </div>
 
             <div class="profile-actions">
-                <button class="btn-blue">Editar Perfil</button>
+                <a href="inicio.html" class="btn btn-orange">Voltar ao início</a>
+                <button type="button" class="btn-blue" id="btn-editar">Editar perfil</button>
                 <a href="senhanova.html" class="btn btn-orange">Editar senha</a>
             </div>
 
         </section>
 
-        <!-- AQUI ESTÁ A MUDANÇA: A section antiga foi substituída por esta nova estrutura -->
-        <section class="data-grid">
+                <section class="data-grid">
 
             <div class="input-group">
                 <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" name="nome" placeholder="Exemplo Da Silva">
+                <input type="text" id="nome" readonly name="nome" autocomplete="name">
             </div>
 
             <div class="input-group">
                 <label for="email">Email Corporativo</label>
-                <input type="email" id="email" name="email" placeholder="Exemplo@gmail.com">
+                <input type="email" id="email" readonly name="email">
             </div>
 
             <div class="input-group">
                 <label for="CPF">CPF</label>
-                <input type="text" id="CPF" name="CPF" placeholder="xxx.xxx.xxx-xx">
+                <input type="text" id="CPF" readonly name="CPF">
             </div>
 
             <div class="input-group">
                 <label for="Telefone">Telefone</label>
-                <input type="text" id="Telefone" name="Telefone" placeholder="(xx) xxxxx-xxxx">
+                <input type="text" id="Telefone" readonly name="Telefone" placeholder="(61) 90000-0000" autocomplete="tel">
             </div>
 
             <div class="input-group">
                 <label for="Cargo">Cargo</label>
-                <input type="text" id="Cargo" name="Cargo" placeholder="Gerente de Documentação">
+                <input type="text" id="Cargo" readonly name="Cargo">
             </div>
 
             <div class="input-group">
                 <label for="Nivel">Nível de Acesso</label>
-                <input type="text" id="Nivel" name="Nivel de acesso" placeholder="Administrador">
+                <input type="text" id="Nivel" readonly name="Nivel de acesso">
             </div>
 
             <div class="input-group">
                 <label for="Departamento">Departamento</label>
-                <input type="text" id="Departamento" name="Departamento" placeholder="Administrativo">
+                <input type="text" id="Departamento" readonly name="Departamento">
             </div>
 
-            <a class="btn-logout" href="index.html">
+            <a class="btn-logout" href="index.html" id="btn-sair">
                 <img src="assets/icons/iconUpload.svg" alt="Sair" class="logo-logout">
                 Sair
             </a>
 
         </section>
 
+    <p id="msg" class="msg" role="alert" style="grid-column:1/-1"></p>
     </main>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/conta.js"></script>
 
 </body>
 </html>

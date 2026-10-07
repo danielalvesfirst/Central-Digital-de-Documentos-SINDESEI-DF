@@ -1,28 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Entrar - Central de Documentos SINDESEI-DF</title>
     <link rel="stylesheet" href="assets/css/style.css">
-
 </head>
 <body>
-    <img class="logo" src="assets/logos/Sindesei-DF-padrao.svg">
-     <form>
-        <label for="email"></label>
-        <input type="email" name="email" id="email" placeholder="E-mail corporativo" >
-           
-         
-         <label for="senha"></label>
-         <input type="password" id="senha" name="senha" placeholder="Senha" minlength="8" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="A senha deve ter pelo menos 8 caracteres, incluindo um número e um caractere especial." required>
-           
-         <button type="submit">Entrar</button>
-           
-
-     </form>
-      <a href="recuperar.html">Esqueci minha senha</a>
-
-      <script src="script.js"></script>
+    <img class="logo" src="assets/logos/Sindesei-DF-padrao.svg" alt="SINDESEI-DF">
+    <form id="form-login">
+        <label class="sr-only" for="email">E-mail corporativo</label>
+        <input type="email" id="email" name="email" placeholder="E-mail corporativo" autocomplete="username" required>
+        <label class="sr-only" for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password" minlength="8" required>
+        <p id="msg" class="msg" role="alert"></p>
+        <button type="submit">Entrar</button>
+    </form>
+    <a href="recuperar.html">Esqueci minha senha</a>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>

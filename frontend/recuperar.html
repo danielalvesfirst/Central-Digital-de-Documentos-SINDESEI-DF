@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Recuperar senha - SINDESEI-DF</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/01style.css">
-
 </head>
 <body>
-    <img  class="logo" src="assets/logos/Sindesei-DF-padrao.svg">
-      <h1>Recuperar senha </h1>
-    <form>
-        <p>Digite seu e-mail corporativo para receber as instruções de redefinição de senha.</p>
-        
-        <label for="email"></label>
-        <input type="email" id="email" name="email" placeholder="E-mail corporativo"> 
-          
-        
+    <img class="logo" src="assets/logos/Sindesei-DF-padrao.svg" alt="SINDESEI-DF">
+    <h1>Recuperar senha</h1>
+    <p class="lead">Digite seu e-mail corporativo para receber o link de redefinição.</p>
+    <form id="form-recuperar">
+        <label class="sr-only" for="email">E-mail corporativo</label>
+        <input type="email" id="email" name="email" placeholder="E-mail corporativo" autocomplete="username" required>
+        <p id="msg" class="msg" role="alert"></p>
         <button type="submit">Enviar link de recuperação</button>
-          
     </form>
-    <a href="index.html">Voltar a página de login</a>
-
+    <a href="index.html">Voltar ao login</a>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>
