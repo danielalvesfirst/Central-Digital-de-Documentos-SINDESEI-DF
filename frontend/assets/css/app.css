@@ -502,3 +502,42 @@ dialog .acoes {
   margin-top: 18px;
   font-size: 14px;
 }
+
+/* ===== Responsividade robusta ===== */
+html { -webkit-text-size-adjust: 100%; }
+img { max-width: 100%; }
+body { grid-template-columns: clamp(190px, 18vw, 240px) minmax(0, 1fr); }
+.topo { flex-wrap: wrap; gap: 12px 20px; }
+.topo .logo { width: clamp(130px, 16vw, 190px); }
+.topo .titulo { flex: 1 1 220px; min-width: 0; }
+.topo h1 { font-size: clamp(18px, 2.2vw, 24px); overflow-wrap: anywhere; }
+.menu a { line-height: 1.25; overflow-wrap: anywhere; }
+main { padding: clamp(16px, 3vw, 32px); }
+h2, h3, td, th, strong, .chip, .tag, .card span, .msg, .drop { overflow-wrap: anywhere; }
+h2 { font-size: clamp(20px, 2.6vw, 26px); }
+.btn, .chip { line-height: 1.25; text-align: center; }
+.barra input { min-width: min(100%, 240px); padding: 0 16px; text-overflow: ellipsis; }
+input::placeholder, textarea::placeholder { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+.ficha .quem { flex: 1 1 260px; min-width: 0; }
+.arq { flex-wrap: wrap; }
+dialog { overflow-y: auto; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); padding: clamp(18px, 3vw, 28px); }
+dialog input:not([type=file]), dialog select, dialog textarea { min-width: 0; text-overflow: ellipsis; }
+.duas { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+@media (max-width: 900px) {
+  body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; }
+  .menu { flex-direction: row; overflow-x: auto; padding: 8px; }
+  .menu a { white-space: nowrap; }
+}
+
+/* ===== Tela Início ===== */
+.sub { color: var(--suave); margin: -8px 0 22px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 14px; background: #CDDCEB; }
+.stat strong { font-size: clamp(26px, 3vw, 34px); color: var(--azul); }
+.stat span { font-size: 14px; color: #333; }
+.secao { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.secao h3 { font-size: 20px; }
+.caixa { border: 1px solid var(--borda); border-radius: 14px; overflow: hidden; }
+.caixa .vazio { padding: 28px; }
+.atalhos { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }

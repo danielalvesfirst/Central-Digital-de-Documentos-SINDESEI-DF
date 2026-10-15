@@ -75,7 +75,9 @@ function tabela(itens) {
 }
 async function sessao() {
   const me = await Api.me();
-  return (p) => (me.permissoes || []).includes(p);
+  const pode = (p) => (me.permissoes || []).includes(p);
+  pode.me = me;
+  return pode;
 } // só esconde botões (UX); quem protege é o servidor
 function pager(r, ir) {
   if (r.totalPaginas <= 1) return "";
@@ -109,18 +111,24 @@ const telas = {
     const pode = await sessao();
     Shell.montar("inicio", "Central Digital de Documentos", "", pode);
     cats = await Api.categorias();
-    const { itens } = await Api.documentos({ limite: 5 });
+    const r = await Api.documentos({ pagina: 1, limite: 5 });
+    const total = cats.reduce((s, c) => s + c.total, 0);
+    const stat = (valor, rotulo) =>
+      el("div", { className: "stat" }, el("strong", { textContent: String(valor) }), el("span", { textContent: rotulo }));
+    const nome = (pode.me.nome || "").split(" ")[0];
+    const atalhos = el("div", { className: "atalhos" },
+      el("a", { className: "btn", href: "documentos.html", textContent: "Ver todos os documentos" }),
+      el("a", { className: "btn btn-vazado", href: "categorias.html", textContent: "Ver categorias" }));
+    if (pode("documentos:cadastrar"))
+      atalhos.append(el("a", { className: "btn btn-ouro", href: "documentos.html?novo=1", textContent: "+ Cadastrar documento" }));
     main.append(
-      el("h2", { textContent: "Últimos documentos" }),
-      tabela(itens),
-      el(
-        "p",
-        { style: "margin-top:18px" },
-        el("a", {
-          href: "documentos.html",
-          textContent: "Ver todos os documentos",
-        }),
-      ),
+      el("h2", { textContent: nome ? `Olá, ${nome}` : "Início" }),
+      el("p", { className: "sub", textContent: "Veja o resumo da central e os documentos mais recentes." }),
+      el("div", { className: "stats" }, stat(total, "documentos cadastrados"), stat(cats.length, "categorias"),
+        stat(cats.filter((c) => c.total).length, "categorias com documentos")),
+      el("div", { className: "secao" }, el("h3", { textContent: "Últimos documentos" })),
+      el("div", { className: "caixa" }, tabela(r.itens)),
+      atalhos,
     );
   },
   async documentos() {

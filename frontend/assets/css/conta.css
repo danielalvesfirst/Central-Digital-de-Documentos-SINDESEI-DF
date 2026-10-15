@@ -241,3 +241,23 @@ input:focus-visible {
     width: 180px;
   }
 }
+
+/* ===== Responsividade robusta ===== */
+html { -webkit-text-size-adjust: 100%; }
+img { max-width: 100%; }
+body { padding: clamp(14px, 3vw, 25px); }
+header { flex-wrap: wrap; gap: 16px; }
+h1 { font-size: clamp(20px, 3vw, 26px); }
+.logo { width: clamp(140px, 22vw, 250px); }
+.profile-card { flex-wrap: wrap; gap: 24px; padding: clamp(20px, 4vw, 45px); }
+.profile-info { flex: 1 1 280px; min-width: 0; }
+.profile-info > div { min-width: 0; }
+.profile-info h2, .profile-info p { overflow-wrap: anywhere; }
+.profile-actions { flex-wrap: wrap; }
+.btn-blue, .btn-orange { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 22px; text-align: center; line-height: 1.2; }
+.data-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.input-group { min-width: 0; }
+.input-group input { min-width: 0; height: 64px; padding: 18px 20px; text-overflow: ellipsis; }
+.input-group input::placeholder { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.input-group label { max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-logout { grid-column: auto; }

@@ -59,15 +59,6 @@ const Shell = {
         "div",
         { className: "acoes" },
         el(
-          "button",
-          {
-            type: "button",
-            title: "Notificações (em breve)",
-            "aria-label": "Notificações",
-          },
-          el("img", { src: "assets/icons/Bell.svg", alt: "" }),
-        ),
-        el(
           "a",
           { href: "conta.html", "aria-label": "Minha conta" },
           el("img", { src: "assets/icons/icon-imgPerson.svg", alt: "" }),
