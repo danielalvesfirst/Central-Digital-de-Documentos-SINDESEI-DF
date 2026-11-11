@@ -17,3 +17,5 @@ window.APP_CONFIG.TIPOS_ARQUIVO = [
   "jpeg",
   "zip",
 ];
+// true = mostra, nas telas administrativas, qual endpoint ainda falta (uso de quem desenvolve)
+window.APP_CONFIG.MODO_DEV = false;

@@ -1,0 +1,62 @@
+/* Área administrativa: carrega depois de app.css e reaproveita seus componentes */
+.pular{position:absolute;left:-999px;top:8px;z-index:100;background:#fff;color:var(--azul);padding:10px 16px;border-radius:8px}
+.pular:focus{left:8px}
+body.admin .topo{border-bottom:4px solid var(--ouro)}
+.topo .acoes a.voltar{width:auto;height:auto;border-radius:12px;padding:10px 16px;background:#fff;color:var(--azul);font-size:15px;text-decoration:none;white-space:nowrap}
+.menu .grupo{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#bcd2ea;padding:16px 12px 4px}
+main:focus{outline:none}
+.bloco{margin-bottom:32px}.bloco>h3{font-size:19px;margin:20px 0 12px}.bloco>h3:first-child{margin-top:0}
+.estado{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:22px 24px;border:1px solid var(--borda);border-left:6px solid #7c7c7c;border-radius:12px;background:#fafafa;max-width:760px}
+.estado strong{font-size:17px}.estado p{color:#333;line-height:1.5}
+.estado code{background:#eee;padding:3px 8px;border-radius:6px;font-size:13px;overflow-wrap:anywhere}
+.estado.erro,.estado.negado{border-left-color:var(--vinho)}.estado.pendente{border-left-color:var(--ouro);background:#fff9ec}.estado.vazio{border-left-color:var(--azul)}
+.spin{width:22px;height:22px;border:3px solid #ccd;border-top-color:var(--azul);border-radius:50%;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+#toasts{position:fixed;inset:auto 16px 16px auto;margin:0;border:0;padding:0;background:transparent;overflow:visible;pointer-events:none;display:flex;flex-direction:column;gap:10px;z-index:200;max-width:min(420px,calc(100vw - 32px))}
+.toast{padding:14px 18px;border-radius:12px;background:#1b6b36;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);overflow-wrap:anywhere}.toast.erro{background:var(--vinho)}
+.filtros{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:16px;padding:16px;border:1px solid var(--borda);border-radius:12px;background:#fafafa}
+.filtros .campo{display:flex;flex-direction:column;gap:6px;flex:1 1 180px;min-width:0}.filtros label{font-size:13px;font-weight:bold}
+.filtros input,.filtros select{height:42px;padding:0 12px;border:1px solid #7c7c7c;border-radius:10px;font-size:15px;background:#fff;min-width:0;width:100%}
+.contador{font-size:14px;color:var(--suave);margin-bottom:8px}
+.badge{display:inline-block;padding:3px 12px;border-radius:12px;font-size:13px;font-weight:bold;background:#e4e4e4;color:#333}
+.badge.ok{background:#d7efdf;color:#1b6b36}.badge.bloq{background:#f6dbe1;color:#7a1328}
+.acoes-linha{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{min-height:34px;padding:6px 12px;font-size:14px;border-radius:10px}
+.dist{display:grid;gap:10px;max-width:760px}
+.dist .linha{display:grid;grid-template-columns:minmax(100px,220px) minmax(0,1fr) 48px;gap:12px;align-items:center;font-size:15px}
+.dist .trilho{height:12px;border-radius:6px;background:#e4e4e4;overflow:hidden}.dist .preench{height:100%;background:var(--azul)}.dist .n{text-align:right;font-weight:bold}
+.matriz th,.matriz td{text-align:center}
+.matriz th:first-child,.matriz td:first-child{text-align:left;position:sticky;left:0;background:#fff}.matriz th:first-child{background:#d9d9d9}
+.matriz th small{display:block;font-weight:normal;color:#444;margin:4px 0 8px}
+.sim{color:#1b6b36;font-weight:bold}.nao{color:#777}
+.perfis-desc{margin-top:18px;display:grid;gap:6px;font-size:15px}
+.detalhe{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 18px}.detalhe dt{font-weight:bold}.detalhe dd{overflow-wrap:anywhere}
+.form-inline{display:grid;gap:16px;max-width:620px}.form-inline label{font-weight:bold;display:block;margin-bottom:6px}
+.form-inline input[type=number]{width:160px;height:44px;padding:0 12px;border:1px solid #7c7c7c;border-radius:10px;font-size:16px}
+.form-inline fieldset,dialog.modal fieldset{border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
+.form-inline legend,dialog.modal legend{font-weight:bold;padding:0 6px}
+.checks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:6px}
+.form-inline .checks label,dialog.modal .checks label{font-weight:normal;display:flex;gap:8px;align-items:center;margin:4px 0}
+dialog.modal input[type=checkbox]{width:auto;height:auto;padding:0;margin:0}
+.form-adm .largo{grid-column:1/-1}.ajuda{display:block;color:var(--suave);font-size:12px;margin-top:4px}
+dialog.modal{width:min(680px,94vw)}
+@media(max-width:600px){.detalhe{grid-template-columns:1fr}.dist .linha{grid-template-columns:minmax(0,1fr) 40px}.dist .trilho{grid-column:1/-1;order:3}}
+.estado.vazio{text-align:left;padding:22px 24px;color:inherit;background:#fafafa}
+@media(max-width:900px){.menu .grupo{display:none}}
+
+/* ===== Acesso a documentos confidenciais ===== */
+dialog.modal input[type=radio] { width: auto; height: auto; padding: 0; margin: 3px 0 0; }
+.acesso h3 { margin: 22px 0 10px; font-size: 17px; }
+.acesso .opcoes { display: grid; gap: 10px; margin-top: 6px; }
+.acesso label { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; font-weight: normal; }
+.acesso fieldset { border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; }
+.conceder { display: grid; gap: 12px; }
+.conceder label.rot { display: block; font-weight: bold; margin: 0 0 6px; }
+.conceder select, .conceder input[type=search], .conceder input[type=date] { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid #7c7c7c; border-radius: 10px; font-size: 15px; background: #fff; }
+dialog.modal .resultados { max-height: 220px; overflow: auto; border: 1px solid var(--borda); border-radius: 10px; padding: 8px 12px; }
+dialog.modal .resultados fieldset { border: 0; padding: 0; }
+.matriz tbody th:first-child{background:#fff}
+
+/* Contraste: texto dos botões vazados mais escuro (o dourado puro tem pouco contraste em texto pequeno) */
+body.admin .btn-vazado { color: #7a5600; }

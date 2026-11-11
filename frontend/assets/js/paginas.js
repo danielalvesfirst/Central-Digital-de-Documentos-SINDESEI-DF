@@ -53,7 +53,7 @@ function tabela(itens) {
         ver.innerHTML = olho;
         return el(
           "tr",
-          {},
+          { className: d.classificacao === "confidencial" ? "conf" : "" },
           el(
             "td",
             {},
@@ -62,6 +62,7 @@ function tabela(itens) {
               href: "documento.html?id=" + d.id,
               textContent: d.titulo,
             }),
+            seloClassificacao(d),
           ),
           el("td", { textContent: nomeCat(d.categoria) }),
           el("td", { textContent: dataBR(d.data) }),
@@ -103,7 +104,8 @@ function pager(r, ir) {
 }
 const erroTela = (e) =>
   main.replaceChildren(
-    el("p", { className: "msg erro", textContent: e.message }),
+    el("p", { className: "msg erro", textContent: e.negado ? "Você não tem autorização para visualizar este conteúdo." : e.message }),
+    el("a", { href: "documentos.html", textContent: "Voltar para os documentos" }),
   );
 
 const telas = {
@@ -218,11 +220,11 @@ const telas = {
       t = setTimeout(carregar, 300);
     };
     novo.hidden = !pode("documentos:cadastrar");
-    novo.onclick = () => Cadastro.abrir(salvo);
+    novo.onclick = () => Cadastro.abrir(salvo, null, { classificar: pode("documentos:permissoes") });
     desenharChips();
     await carregar();
     if (params.has("novo") && pode("documentos:cadastrar"))
-      Cadastro.abrir(salvo);
+      Cadastro.abrir(salvo, null, { classificar: pode("documentos:permissoes") });
   },
   async categorias() {
     const pode = await sessao();
@@ -281,6 +283,7 @@ const telas = {
       d.tipo
         ? el("span", { className: "tag", textContent: d.tipo.toUpperCase() })
         : "",
+      seloClassificacao(d),
     );
     const info = el(
       "div",
@@ -351,7 +354,7 @@ const telas = {
       textContent: "Editar documento",
       hidden: !pode("documentos:editar"),
     });
-    ed.onclick = () => Cadastro.abrir(() => location.reload(), d);
+    ed.onclick = () => Cadastro.abrir(() => location.reload(), d, { classificar: pode("documentos:permissoes") });
     const ex = el("button", {
       type: "button",
       className: "btn btn-perigo",
@@ -373,6 +376,7 @@ const telas = {
       { className: "barra", style: "margin-top:14px" },
       ed,
       ex,
+      el("a", { className: "btn btn-vazado", href: "admin-documentos.html?acesso=" + d.id, textContent: "Gerenciar acesso", hidden: !pode("documentos:permissoes") }),
     );
     main.append(
       el(

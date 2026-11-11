@@ -42,3 +42,6 @@ Cada rota acima precisa checar a permissão no servidor (o front só esconde bot
 - Limite de upload: o front usa 100 MB (`MAX_MB`); o protótipo cita 5 GB. Para arquivos muito grandes, avaliar upload em partes.
 - Recuperação de senha: e-mail, token de uso único, expiração, limite de tentativas.
 - Escalabilidade da busca (índice de texto) e das listagens.
+
+## Classificação de documentos
+`Documento` ganha o campo `classificacao` (`geral` | `confidencial`). Listas, detalhe, busca, contadores e downloads devem respeitar a autorização do usuário; sem autorização, 403. Detalhes e endpoints de gestão de acesso em [`API-ADMIN.md`](API-ADMIN.md).
