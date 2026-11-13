@@ -8,18 +8,23 @@ const Api = (() => {
 
   async function req(path, { method = "GET", body, form } = {}) {
     if (USE_MOCK) return mock(method, path, body, form);
-    const res = await fetch(API_BASE + path, {
+    let res;
+    try {
+      res = await fetch(API_BASE + path, {
       method,
       credentials: "include", // sessão via cookie HttpOnly
       headers: body ? { "Content-Type": "application/json" } : {},
       body: form || (body ? JSON.stringify(body) : undefined),
-    });
+      });
+    } catch {
+      throw Object.assign(new Error("Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."), { rede: true });
+    }
     if (res.status === 401 && !location.pathname.endsWith("index.html"))
       location.href = "index.html";
     if (!res.ok) {
       const e = await res.json().catch(() => ({}));
       if (res.status === 403) throw Object.assign(new Error(e.mensagem || "Acesso negado."), { negado: true });
-      if (path.startsWith("/admin") && (res.status === 501 || (res.status === 404 && !e.mensagem) || e.codigo === "ENDPOINT_NAO_IMPLEMENTADO")) throw pendente(method, path);
+      if (/^\/(admin|assistente|favoritos)/.test(path) && (res.status === 501 || (res.status === 404 && !e.mensagem) || e.codigo === "ENDPOINT_NAO_IMPLEMENTADO")) throw pendente(method, path);
       throw new Error(e.mensagem || "Erro " + res.status);
     }
     return res.status === 204 ? null : res.json();
@@ -37,6 +42,16 @@ const Api = (() => {
     redefinir: (token, senha) =>
       req("/auth/redefinir", { method: "POST", body: { token, senha } }),
     me: () => req("/me"),
+    favoritar: (id) => req("/favoritos/" + encodeURIComponent(id), { method: "PUT" }),
+    desfavoritar: (id) => req("/favoritos/" + encodeURIComponent(id), { method: "DELETE" }),
+    // Assistente IA: contrato proposto em docs/API.md (nenhuma resposta é simulada)
+    ia: {
+      conversas: () => req("/assistente/conversas"),
+      conversa: (id) => req("/assistente/conversas/" + encodeURIComponent(id)),
+      perguntar: (conversaId, texto) => req("/assistente/mensagens", { method: "POST", body: { conversaId, texto } }),
+      resumir: (documentoId) => req("/assistente/resumo", { method: "POST", body: { documentoId } }),
+      sugerir: (documentoId) => req("/assistente/sugestoes", { method: "POST", body: { documentoId } }),
+    },
     // Área administrativa: contrato proposto em docs/API-ADMIN.md
     admin: {
       resumo: () => req("/admin/resumo"),
@@ -138,6 +153,7 @@ const Api = (() => {
         "documentos:visualizar", "usuarios:gerenciar", "configuracoes:administrar", "auditoria:consultar", "documentos:permissoes",
         ],
       };
+    if (path.startsWith("/assistente")) throw pendente(method, path); // IA: sem respostas simuladas
     if (path.startsWith("/admin")) return mockAdmin(method, path, body, db, save, CATS);
     if (path.split("?")[0] === "/categorias") {
       const todas = db.adm && db.adm.cats ? db.adm.cats : CATS.map(([id, nome, descricao]) => ({ id, nome, descricao, ativa: true }));
@@ -219,10 +235,17 @@ const Api = (() => {
       save();
       return null;
     }
+    const fv = path.match(/^\/favoritos\/(\d+)$/);
+    if (fv) {
+      const fid = +fv[1], atual = db.fav || [];
+      db.fav = method === "PUT" ? [...new Set([...atual, fid])] : atual.filter((x) => x !== fid);
+      save();
+      return null;
+    }
     if (um) {
       const d = db.docs.find((x) => x.id == um[1]);
       if (!d) throw new Error("Documento não encontrado.");
-      return d;
+      return { ...d, favorito: (db.fav || []).includes(d.id) };
     }
     if (path.startsWith("/documentos")) {
       const p = new URLSearchParams(path.split("?")[1] || ""),
@@ -230,24 +253,21 @@ const Api = (() => {
         t = (p.get("busca") || "").toLowerCase(),
         lim = +p.get("limite") || 20,
         pag = +p.get("pagina") || 1;
-      const cat = (d) =>
-        (CATS.find((x) => x[0] === d.categoria) || [])[1] || "";
-      const todos = db.docs.filter(
-        (d) =>
-          (!c || d.categoria === c) &&
-          (!p.get("classificacao") || (d.classificacao || "geral") === p.get("classificacao")) &&
-          (!t ||
-            [d.titulo, d.assunto, (d.palavrasChave || []).join(" "), cat(d)]
-              .join(" ")
-              .toLowerCase()
-              .includes(t)),
-      );
+      const cat = (d) => (CATS.find((x) => x[0] === d.categoria) || [])[1] || "";
+      const fav = db.fav || [], q = (k) => p.get(k) || "", ordem = q("ordem");
+      const pontos = (d) => (d.titulo.toLowerCase().includes(t) ? 3 : 0) + ((d.assunto || "").toLowerCase().includes(t) ? 2 : 0) + ((d.palavrasChave || []).join(" ").toLowerCase().includes(t) ? 1 : 0);
+      const todos = db.docs.filter((d) =>
+        (!c || d.categoria === c) &&
+        (!q("classificacao") || (d.classificacao || "geral") === q("classificacao")) &&
+        (!q("tipo") || d.tipo === q("tipo")) && (!q("de") || d.data >= q("de")) && (!q("ate") || d.data <= q("ate")) &&
+        (!q("responsavel") || (d.criadoPor || "").toLowerCase().includes(q("responsavel").toLowerCase())) &&
+        (q("favoritos") !== "1" || fav.includes(d.id)) &&
+        (!t || [d.titulo, d.assunto, (d.palavrasChave || []).join(" "), cat(d)].join(" ").toLowerCase().includes(t)));
+      todos.sort((a, b) => ordem === "antigos" ? a.data.localeCompare(b.data) : ordem === "nome_asc" ? a.titulo.localeCompare(b.titulo, "pt") : ordem === "nome_desc" ? b.titulo.localeCompare(a.titulo, "pt")
+        : ordem === "relevancia" && t ? pontos(b) - pontos(a) || b.data.localeCompare(a.data) : b.data.localeCompare(a.data));
       return {
-        itens: todos.slice((pag - 1) * lim, pag * lim).map((d) => (d.classificacao === "confidencial" ? { ...d, autorizados: resumoAut(db, d.id) } : d)),
-        total: todos.length,
-        pagina: pag,
-        limite: lim,
-        totalPaginas: Math.max(1, Math.ceil(todos.length / lim)),
+        itens: todos.slice((pag - 1) * lim, pag * lim).map((d) => ({ ...(d.classificacao === "confidencial" ? { ...d, autorizados: resumoAut(db, d.id) } : d), favorito: fav.includes(d.id) })),
+        total: todos.length, pagina: pag, limite: lim, totalPaginas: Math.max(1, Math.ceil(todos.length / lim)),
       };
     }
   }
@@ -263,7 +283,7 @@ const Api = (() => {
         { id: "com", nome: "Usuário comum", descricao: "Visualiza documentos de acesso geral e os confidenciais para os quais foi autorizado.", permissoes: ["documentos:visualizar"] },
       ],
       usuarios: [], grupos: [], cats: null, auts: {}, auditoria: [],
-      config: { limiteUploadMb: 100, tiposArquivo: ["pdf", "doc", "docx", "xls", "xlsx", "txt", "png", "jpg", "zip"] },
+      config: { limiteUploadMb: 25, tiposArquivo: ["pdf", "doc", "docx", "xls", "xlsx", "txt", "png", "jpg", "zip"] },
     };
   }
   function resumoAut(db, id) {

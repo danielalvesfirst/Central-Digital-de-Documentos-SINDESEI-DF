@@ -13,8 +13,6 @@ main:focus{outline:none}
 .spin{width:22px;height:22px;border:3px solid #ccd;border-top-color:var(--azul);border-radius:50%;animation:gira .8s linear infinite}
 @keyframes gira{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}}
-#toasts{position:fixed;inset:auto 16px 16px auto;margin:0;border:0;padding:0;background:transparent;overflow:visible;pointer-events:none;display:flex;flex-direction:column;gap:10px;z-index:200;max-width:min(420px,calc(100vw - 32px))}
-.toast{padding:14px 18px;border-radius:12px;background:#1b6b36;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);overflow-wrap:anywhere}.toast.erro{background:var(--vinho)}
 .filtros{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:16px;padding:16px;border:1px solid var(--borda);border-radius:12px;background:#fafafa}
 .filtros .campo{display:flex;flex-direction:column;gap:6px;flex:1 1 180px;min-width:0}.filtros label{font-size:13px;font-weight:bold}
 .filtros input,.filtros select{height:42px;padding:0 12px;border:1px solid #7c7c7c;border-radius:10px;font-size:15px;background:#fff;min-width:0;width:100%}
@@ -60,3 +58,5 @@ dialog.modal .resultados fieldset { border: 0; padding: 0; }
 
 /* Contraste: texto dos botões vazados mais escuro (o dourado puro tem pouco contraste em texto pequeno) */
 body.admin .btn-vazado { color: #7a5600; }
+
+@media (pointer: coarse) { .btn-sm { min-height: 44px; } .filtros input, .filtros select { height: 44px; } }

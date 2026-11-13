@@ -37,6 +37,7 @@ const Adm = {
       return null;
     }
     main.prepend(el("h2", { textContent: titulo }));
+    demoAviso();
     return pode;
   },
 
@@ -90,14 +91,7 @@ const Adm = {
     catch (e) { if (minha === destino._req) destino.replaceChildren(Adm.erro(e, () => Adm.carregar(destino, buscar, desenhar))); }
   },
 
-  toast(msg, tipo = "ok") {
-    let r = $("#toasts");
-    if (!r) { r = el("div", { id: "toasts", role: "status", "aria-live": "polite" }); r.setAttribute("popover", "manual"); document.body.append(r); }
-    const t = el("div", { className: "toast " + tipo, textContent: msg }); r.append(t);
-    // popover = camada superior da página: o aviso aparece acima de janelas modais abertas
-    try { if (r.matches(":popover-open")) r.hidePopover(); r.showPopover(); } catch { /* navegador sem suporte: segue como elemento fixo */ }
-    setTimeout(() => { t.remove(); if (!r.children.length) try { r.hidePopover(); } catch {} }, 6000);
-  },
+  toast(msg, tipo = "ok") { toast(msg, tipo); }, // função compartilhada em app.js
   msgFalha: (e) => (e.pendente ? "Esta operação ainda não está disponível." + (window.APP_CONFIG.MODO_DEV ? ` (${e.metodo} ${e.endpoint})` : "") : e.negado ? "Você não tem permissão para esta ação." : e.message),
   falha(e) { Adm.toast(Adm.msgFalha(e), "erro"); },
 

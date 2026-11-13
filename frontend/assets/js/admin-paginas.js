@@ -301,16 +301,17 @@ const telas = {
     const alvo = el("div"); main.append(alvo);
     Adm.carregar(alvo, () => Api.admin.configuracoes(), (c, d) => {
       const tipos = [...new Set([...window.APP_CONFIG.TIPOS_ARQUIVO, ...(c.tiposArquivo || [])])];
-      const lim = el("input", { id: "cfg-limite", type: "number", min: 1, max: 2048, required: true, value: c.limiteUploadMb });
+      const lim = el("input", { id: "cfg-limite", type: "number", min: 1, max: window.APP_CONFIG.MAX_MB, required: true, value: c.limiteUploadMb });
       const msg = el("p", { className: "msg", role: "status" }), salvar = el("button", { className: "btn", textContent: "Salvar configurações" });
       const f = el("form", { className: "form-inline" },
-        el("div", {}, el("label", { htmlFor: "cfg-limite", textContent: "Tamanho máximo de upload (MB)" }), lim),
+        el("div", {}, el("label", { htmlFor: "cfg-limite", textContent: "Tamanho máximo de upload por arquivo (MB)" }), lim, el("small", { className: "ajuda", textContent: `O sistema aceita no máximo ${window.APP_CONFIG.MAX_MB} MB por arquivo.` })),
         el("fieldset", {}, el("legend", { textContent: "Tipos de arquivo permitidos" }), el("div", { className: "checks" },
           ...tipos.map((t) => el("label", {}, el("input", { type: "checkbox", value: t, checked: (c.tiposArquivo || []).includes(t) }), "." + t)))), msg, el("div", {}, salvar));
       f.onsubmit = async (e) => {
         e.preventDefault(); msg.textContent = ""; msg.className = "msg";
         const sel = [...f.querySelectorAll("input[type=checkbox]:checked")].map((i) => i.value);
         if (!sel.length) { msg.textContent = "Selecione ao menos um tipo de arquivo."; msg.className = "msg erro"; return; }
+        if (!(+lim.value >= 1) || +lim.value > window.APP_CONFIG.MAX_MB) { msg.textContent = `Informe um valor entre 1 e ${window.APP_CONFIG.MAX_MB} MB.`; msg.className = "msg erro"; return; }
         salvar.disabled = true;
         try { await Api.admin.salvarConfiguracoes({ limiteUploadMb: +lim.value, tiposArquivo: sel }); Adm.toast("Configurações salvas."); } catch (err) { Adm.falha(err); } finally { salvar.disabled = false; }
       };

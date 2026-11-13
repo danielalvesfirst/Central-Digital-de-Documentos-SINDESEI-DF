@@ -57,8 +57,8 @@ $("#btn-editar").addEventListener("click", async (e) => {
 $("#foto").addEventListener("change", async (e) => {
   const f = e.target.files[0];
   if (!f) return;
-  if (!f.type.startsWith("image/") || f.size > 5 * 1048576)
-    return aviso("Escolha uma imagem de até 5 MB.", "erro");
+  if (!f.type.startsWith("image/") || f.size > window.APP_CONFIG.MAX_FOTO_MB * 1048576)
+    return aviso(`Escolha uma imagem de até ${window.APP_CONFIG.MAX_FOTO_MB} MB.`, "erro");
   try {
     const r = await Api.enviarFoto(f);
     $("#foto-img").src = (r && r.fotoUrl) || URL.createObjectURL(f);

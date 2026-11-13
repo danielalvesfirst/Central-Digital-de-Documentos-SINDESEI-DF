@@ -69,7 +69,9 @@ const Shell = {
     const itens = [
       ["inicio", "Início", "iconHouse", "inicio.html"],
       ["documentos", "Documentos", "iconDoc", "documentos.html"],
+      ["favoritos", "Meus favoritos", "icon-star", "favoritos.html"],
       ["categorias", "Categorias", "iconFile", "categorias.html"],
+      ["assistente", "Assistente IA", "icon-spark", "assistente.html"],
       ["novo", "Cadastrar documentos", "icon-addDoc", "documentos.html?novo=1"],
     ];
     const menu = el(
@@ -91,6 +93,7 @@ const Shell = {
     if (["usuarios:gerenciar", "configuracoes:administrar", "auditoria:consultar", "documentos:permissoes"].some(pode))
       menu.append(el("a", { href: "admin.html" }, el("img", { src: "assets/icons/icon-shield.svg", alt: "" }), "Administração"));
     document.body.prepend(topo, menu);
+    demoAviso();
   },
 };
 
@@ -125,9 +128,7 @@ const Cadastro = {
     v("c-class", doc ? doc.classificacao || "geral" : "geral");
     v("c-arq", "");
     $("#c-msg", d).textContent = "";
-    $("#c-nome", d).textContent = doc
-      ? "Clique para trocar o arquivo (opcional)"
-      : `Clique aqui para enviar o arquivo (até ${window.APP_CONFIG.MAX_MB} MB)`;
+    this._mostrarArq(null);
     d.showModal();
   },
   async criar() {
@@ -142,20 +143,34 @@ const Cadastro = {
       <label for="c-kw">Palavras-chave (separe por vírgula)</label><input id="c-kw">
       <label for="c-assunto">Assunto</label><input id="c-assunto" required maxlength="200">
       <label for="c-desc">Descrição</label><textarea id="c-desc" maxlength="1000"></textarea>
-      <label for="c-arq">Arquivo (opcional)</label><label class="drop"><input type="file" id="c-arq" accept="${TIPOS_ARQUIVO.map((t) => "." + t)}"><span id="c-nome">Clique aqui para enviar o arquivo (até ${MAX_MB} MB)</span></label>
+      <label for="c-arq">Arquivo (opcional)</label><label class="drop"><input type="file" id="c-arq" accept="${TIPOS_ARQUIVO.map((t) => "." + t)}" aria-describedby="c-regras"><span id="c-nome">Clique aqui para enviar o arquivo</span></label>
+      <small class="ajuda" id="c-regras">Tamanho máximo: ${MAX_MB} MB por arquivo. Formatos: ${TIPOS_ARQUIVO.map((t) => t.toUpperCase()).join(", ")}.</small>
+      <div id="c-sel" class="arq-sel" hidden><span id="c-sel-nome"></span><span id="c-sel-tam"></span><button type="button" class="btn btn-sm btn-vazado" id="c-sel-rm">Remover arquivo</button></div>
       <p id="c-msg" class="msg" role="alert"></p>
-      <div class="acoes"><button type="button" class="btn btn-vazado" id="c-cancelar">Cancelar</button><button class="btn">Salvar</button></div></form>`;
+      <div class="acoes"><button type="button" class="btn btn-vazado" id="c-cancelar">Cancelar</button><button class="btn" id="c-salvar">Salvar</button></div></form>`;
     $("#c-cat", d).append(
       ...cats.map((c) => el("option", { value: c.id, textContent: c.nome })),
     );
     document.body.append(d);
     $("#c-cancelar", d).onclick = () => d.close();
-    $("#c-arq", d).onchange = (e) => {
-      const f = e.target.files[0];
-      $("#c-nome", d).textContent = f
-        ? f.name
-        : `Clique aqui para enviar o arquivo (até ${MAX_MB} MB)`;
+    const erroMsg = (m) => { $("#c-msg", d).textContent = m; $("#c-msg", d).className = m ? "msg erro" : "msg"; };
+    const validar = (f) => !TIPOS_ARQUIVO.includes(f.name.split(".").pop().toLowerCase())
+      ? `Formato não permitido. Use: ${TIPOS_ARQUIVO.map((t) => t.toUpperCase()).join(", ")}.`
+      : f.size > MAX_MB * 1048576 ? `O arquivo tem ${tamanho(f.size)} e o limite é ${MAX_MB} MB.` : "";
+    const mostrar = (f) => {
+      $("#c-sel", d).hidden = !f;
+      $("#c-nome", d).textContent = f ? "Trocar arquivo" : this.doc ? "Clique para trocar o arquivo (opcional)" : "Clique aqui para enviar o arquivo";
+      if (f) { $("#c-sel-nome", d).textContent = f.name; $("#c-sel-tam", d).textContent = tamanho(f.size); }
     };
+    this._mostrarArq = mostrar;
+    $("#c-arq", d).onchange = (e) => {
+      const f = e.target.files[0]; erroMsg("");
+      if (!f) return mostrar(null);
+      const m = validar(f);
+      if (m) { e.target.value = ""; mostrar(null); return erroMsg(m); }
+      mostrar(f);
+    };
+    $("#c-sel-rm", d).onclick = () => { $("#c-arq", d).value = ""; mostrar(null); erroMsg(""); };
     $("form", d).onsubmit = async (e) => {
       e.preventDefault();
       // Validação só por conveniência do usuário; a validação de verdade (tipo real, vírus, tamanho) é do servidor.
@@ -164,10 +179,8 @@ const Cadastro = {
           $("#c-msg", d).textContent = m;
           $("#c-msg", d).className = "msg erro";
         };
-      if (f && !TIPOS_ARQUIVO.includes(f.name.split(".").pop().toLowerCase()))
-        return erro("Tipo de arquivo não permitido.");
-      if (f && f.size > MAX_MB * 1048576)
-        return erro(`O arquivo passa de ${MAX_MB} MB.`);
+      const mv = f && validar(f);
+      if (mv) return erro(mv);
       if (this.doc && this.doc.classificacao === "confidencial" && this.opcoes.classificar && $("#c-class", d).value === "geral" && !confirm("Ao mudar para acesso geral, todos os usuários poderão visualizar este documento. Deseja continuar?")) return;
       const fd = new FormData();
       [
@@ -180,6 +193,8 @@ const Cadastro = {
       ].forEach(([k, id]) => fd.append(k, $("#" + id, d).value.trim()));
       if (f) fd.append("arquivo", f);
       if (this.opcoes.classificar) fd.append("classificacao", $("#c-class", d).value);
+      const sv = $("#c-salvar", d); erro("");
+      sv.disabled = true; sv.textContent = "Salvando..."; sv.setAttribute("aria-busy", "true");
       try {
         await (this.doc
           ? Api.editarDocumento(this.doc.id, fd)
@@ -188,6 +203,8 @@ const Cadastro = {
         this.aoSalvar();
       } catch (err) {
         erro(err.message);
+      } finally {
+        sv.disabled = false; sv.textContent = "Salvar"; sv.removeAttribute("aria-busy");
       }
     };
   },
@@ -199,4 +216,54 @@ function seloClassificacao(d) {
   const s = el("span", { className: "selo-conf", title: "Acesso restrito a pessoas autorizadas" });
   s.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 1 1 6 0v3H9z"/></svg>Confidencial';
   return s;
+}
+
+// Aviso discreto no modo de demonstração (USE_MOCK): deixa claro que os dados não vão para o servidor
+function demoAviso() {
+  if (!window.APP_CONFIG.USE_MOCK) return;
+  const m = $("#conteudo");
+  if (m && !$(".demo", m)) m.prepend(el("p", { className: "demo", role: "note", textContent: "Modo demonstração: os dados são de teste e não são salvos no servidor." }));
+}
+
+// Aviso temporário (camada superior da página: aparece também acima de janelas modais)
+function toast(msg, tipo = "ok") {
+  let r = $("#toasts");
+  if (!r) { r = el("div", { id: "toasts", role: "status", "aria-live": "polite" }); r.setAttribute("popover", "manual"); document.body.append(r); }
+  const t = el("div", { className: "toast " + tipo, textContent: msg }); r.append(t);
+  try { if (r.matches(":popover-open")) r.hidePopover(); r.showPopover(); } catch { /* sem suporte: segue como elemento fixo */ }
+  setTimeout(() => { t.remove(); if (!r.children.length) try { r.hidePopover(); } catch {} }, 6000);
+}
+
+// Botão de favorito (estrela). d.favorito vem da API; a lista é do usuário autenticado e o servidor valida.
+const estrela = (cheia) => `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="${cheia ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+function botaoFavorito(d, { rotulo = false, aoAlterar } = {}) {
+  const b = el("button", { type: "button", className: "fav-btn" + (rotulo ? " com-texto" : "") });
+  const pintar = () => {
+    b.classList.toggle("ativo", !!d.favorito);
+    b.setAttribute("aria-pressed", String(!!d.favorito));
+    b.setAttribute("aria-label", (d.favorito ? "Remover dos favoritos: " : "Adicionar aos favoritos: ") + d.titulo);
+    b.innerHTML = estrela(!!d.favorito) + (rotulo ? `<span>${d.favorito ? "Favorito" : "Favoritar"}</span>` : "");
+  };
+  b.onclick = async () => {
+    const novo = !d.favorito;
+    b.disabled = true; b.setAttribute("aria-busy", "true");
+    try {
+      await (novo ? Api.favoritar(d.id) : Api.desfavoritar(d.id));
+      d.favorito = novo; pintar();
+      toast(novo ? "Adicionado aos favoritos." : "Removido dos favoritos.");
+      if (aoAlterar) aoAlterar(d);
+    } catch (e) {
+      toast(e.negado ? "Você não tem permissão para alterar favoritos." : e.pendente ? "Os favoritos ainda não estão disponíveis." : e.message, "erro");
+    } finally { b.disabled = false; b.removeAttribute("aria-busy"); }
+  };
+  pintar();
+  return b;
+}
+
+// Identifica o usuário e devolve pode(permissão). Só esconde botões (UX); quem protege é o servidor.
+async function sessao() {
+  const me = await Api.me();
+  const pode = (p) => (me.permissoes || []).includes(p);
+  pode.me = me;
+  return pode;
 }

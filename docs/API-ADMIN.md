@@ -27,7 +27,7 @@ Listas paginadas seguem `{ itens, total, pagina, limite, totalPaginas }`; o fron
 
 | Situação | Método e rota | Corpo / parâmetros | Resposta |
 |---|---|---|---|
-| ✅ já no contrato | `GET /documentos?categoria=&busca=&pagina=&limite=` | n/a | lista de documentos |
+| ✅ já no contrato | `GET /documentos` (filtros em `API.md`: categoria, busca, tipo, período, responsável, classificação, favoritos, ordem) | n/a | lista de documentos |
 | ✅ já no contrato | `GET/PATCH/DELETE /documentos/:id`, `POST /documentos` | ver `API.md` | n/a |
 | ✅ já no contrato | `GET /categorias` | n/a | `[{ id, nome, descricao, total }]` |
 | ✅ já no contrato | `GET /me` | n/a | com `permissoes` |
@@ -45,7 +45,7 @@ Listas paginadas seguem `{ itens, total, pagina, limite, totalPaginas }`; o fron
 | ⏳ novo | `PATCH /admin/categorias/:id` | `{ nome, descricao }` ou `{ ativa }` | 200. Desativar não pode desvincular documentos |
 | ⏳ novo | `PUT /admin/categorias/ordem` | `{ ids: [id] }` na ordem desejada | 204 |
 | ⏳ novo | `GET /admin/auditoria` | `usuario`, `acao`, `documento`, `de`, `ate`, `pagina`, `limite` | lista de `Atividade` |
-| ⏳ novo | `GET/PUT /admin/configuracoes` | `{ limiteUploadMb, tiposArquivo: [extensão] }` | idem |
+| ⏳ novo | `GET/PUT /admin/configuracoes` | `{ limiteUploadMb, tiposArquivo: [extensão] }` | idem. `limiteUploadMb` entre 1 e 25 (mesmo limite do front, ver "Upload" em `API.md`) |
 
 `Usuario`: `{ id, nome, email, cpf (mascarado), telefone, cargo, departamento, perfilId, perfil (nome), situacao ("ativo"|"bloqueado"), ultimoAcesso, criadoEm }`.
 `Atividade`: `{ id, quando (ISO 8601), usuario (nome), acao, recurso: { tipo, id, nome }, detalhes }`.
